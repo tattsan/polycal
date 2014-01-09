@@ -1,0 +1,127 @@
+\documentclass{jsarticle}
+\usepackage[T1]{fontenc}
+\usepackage{polynom}
+\usepackage{polycal}
+\usepackage{amsmath}
+\usepackage{moreverb}
+\usepackage[dvipdfmx]{hyperref}
+\usepackage{otf}
+\title{\textsf{polynomcalc}パッケージのデモ}\author{tattsan}\date{}
+\pagestyle{empty}
+\begin{document}
+\maketitle
+
+\section{}
+ZR氏の「冬休み課題\ajMaru2：円周率を使わない話」を読んだ。
+\begin{quote}
+  \url{http://d.hatena.ne.jp/zrbabbler/20131231/1388478052}
+  (\url{http://t.co/NjEtKJwLyO})
+\end{quote}
+\verb+\expandafter+  がよくわからない自分には格好の宿題だ。
+しかしこれは是非とも\textbf{\TeX で解かねばなるまい}。
+そこで既存の \textsf{polynom} パッケージに微分や積分のルーチンを追加する
+\textsf{polycal} パッケージを作成した。
+その結果 \verb|\expandafter|を書く羽目になった。
+以下\textsf{polycal} パッケージを利用して宿題のを計算をする。
+\section{}
+まず変数の宣言。ここでは時間変数$T$とパラメータ$A,B$を変数とする。
+\polyset{vars=TAB}
+
+\begin{quote}
+\begin{boxedverbatim}
+\polyset{vars=TAB}
+\end{boxedverbatim}
+\end{quote}
+次に3次ベジェによる円もどき曲線の定義。
+\polydefine\X{(1-T)^3*1+3(1-T)^2T*1+3(1-T)T^2*A+T^3*0}
+\polydefine\Y{(1-T)^3*0+3(1-T)^2T*A+3(1-T)T^2*1+T^3*1}
+\begin{quote}
+\begin{boxedverbatim}
+\polydefine\X{(1-T)^3*1+3(1-T)^2T*1+3(1-T)T^2*A+T^3*0}
+\polydefine\Y{(1-T)^3*0+3(1-T)^2T*A+3(1-T)T^2*1+T^3*1}
+\end{boxedverbatim}
+\end{quote}
+ここで $A$ は
+\[
+  A=\dfrac43\bigl(\sqrt2-1\bigr)
+\]
+であるが、この値の代入は最後に行なう。
+$X,Y$ を表示させるには次のように書く。
+\begin{quote}
+\begin{boxedverbatim}
+\begin{align*}
+  X &= \polyprint\X, & Y &= \polyprint\Y.
+\end{align*}    
+\end{boxedverbatim}
+\end{quote}
+表示されるのは簡約後の数式である。
+\begin{align*}
+  X &= \polyprint\X, & Y &= \polyprint\Y.
+\end{align*}
+\newpage
+次にこれを微分する。
+\polydiff\dX{T}\X  \polydiff\dY{T}\Y
+\begin{quote}
+\begin{boxedverbatim}
+\polydiff\dX{T}\X  \polydiff\dY{T}\Y
+\begin{align*}
+  dX &= (\polyprint\dX)\,dT, & dY &= (\polyprint\dY)\;dT.
+\end{align*}    
+\end{boxedverbatim}
+\end{quote}
+\begin{align*}
+  dX &= (\polyprint\dX)\,dT, & dY &= (\polyprint\dY)\;dT.
+\end{align*}    
+次に面積要素を定義する。円の面積を計算するため、
+$\dfrac12(XdY-YdX)$ の4倍を$dS$と定めよう。
+\begin{quote}
+\begin{boxedverbatim}
+\polymul\dSA\X\dY  \polymul\dSB\Y\dX
+\polysub\dS\dSA\dSB \polymul\dS{2}\dS
+\begin{quote}
+$dS=2(XdY-YdX)=\polyprint\dS.$
+\end{quote}
+\end{boxedverbatim}
+\end{quote}
+\polymul\dSA\X\dY  \polymul\dSB\Y\dX
+\polysub\dS\dSA\dSB  \polymul\dS{2}\dS
+\begin{quote}
+$dS=2(XdY-YdX)=\polyprint\dS.$
+\end{quote}
+\verb|polynom.sty|のバグ?のため多変数多項式の同類項はまとまらず、表示が長くなり過ぎる。
+ディスプレイ数式だと改行されないのでインラインで書いておいた。
+次は積分だ。
+\begin{quote}
+\begin{boxedverbatim}
+\polyint\ST{T}\dS
+\polysubstnum\S{T}{1}\ST
+\[ S = \int_0^1dS = \polyprint\S. \]
+\end{boxedverbatim}
+\end{quote}
+\polyint\ST{T}\dS
+\polysubstnum\S{T}{1}\ST
+\[ S = \int_0^1dS = \polyprint\S. \]
+最後に$A$の値を代入しよう。まずは$B=\sqrt2$として、$A=\dfrac43(B-1)$を代入する。
+\begin{quote}
+\begin{boxedverbatim}
+\polysubst\S{A}{(4/3)(B-1)}\S
+\[ S=\polyprint\S. \]
+\end{boxedverbatim}
+\end{quote}
+\polysubst\S{A}{(4/3)(B-1)}\S
+\[ S=\polyprint\S. \]
+最後に$B$に$\sqrt2$を代入する。これが答だ!
+\begin{quote}
+\begin{boxedverbatim}
+\polysubstsqrt\S{B}{2}\S \Huge
+\[ \polyset{delims={\left.}{\right.}} S=\polyprint\S. \]
+\end{boxedverbatim}
+\end{quote}
+\polysubstsqrt\S{B}{2}\S \Huge
+\[ \polyset{delims={\left.}{\right.}} S=\polyprint\S. \]
+\end{document}
+
+%%% Local Variables: 
+%%% mode: japanese-latex
+%%% TeX-master: t
+%%% End: 
