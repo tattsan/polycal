@@ -211,17 +211,17 @@
          \if#5#2
              \edef\@tempa{\number#6}%
              \pld@PowerPoly\@tempb#3\@tempa
-             \expandafter\def\expandafter\@tempa\expandafter{#1}
-             \pld@MultiplyPoly#1\@tempa\@tempb%
+             \expandafter\def\expandafter\@tempa\expandafter{#1}%
+             \pld@MultiplyPoly#1\@tempa\@tempb
           \else
-            \expandafter\def\expandafter\@tempa\expandafter{#1}
-            \edef\@tempb{\noexpand#4{#5}{#6}}
-            \pld@MultiplyPoly#1\@tempa\@tempb%
+            \expandafter\def\expandafter\@tempa\expandafter{#1}%
+            \edef\@tempb{\noexpand#4{#5}{#6}}%
+            \pld@MultiplyPoly#1\@tempa\@tempb
           \fi
       \else
-          \expandafter\def\expandafter\@tempa\expandafter{#1}
-          \edef\@tempb{\noexpand#4{#5}{#6}}
-          \pld@MultiplyPoly#1\@tempa\@tempb%
+          \expandafter\def\expandafter\@tempa\expandafter{#1}%
+          \edef\@tempb{\noexpand#4{#5}{#6}}%
+          \pld@MultiplyPoly#1\@tempa\@tempb
       \fi
     \expandafter\pld@SubstPolyMonom@\expandafter#1\expandafter#2\expandafter#3%
     \fi}
