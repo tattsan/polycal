@@ -46,7 +46,7 @@ ZR氏の「冬休み課題\ajMaru2：円周率を使わない話」を読んだ�
   A=\dfrac43\bigl(\sqrt2-1\bigr)
 \]
 であるが、この値の代入は最後に行なう。
-$X,Y$ を表示させるには次のように書く。
+$X,Y$ を表示させるには \verb|\polyprint| を用いる。
 \begin{quote}
 \begin{boxedverbatim}
 \begin{align*}
@@ -79,16 +79,16 @@ $\dfrac12(XdY-YdX)$ の4倍を$dS$と定めよう。
 \polymul\dSA\X\dY  \polymul\dSB\Y\dX
 \polysub\dS\dSA\dSB \polymul\dS{2}\dS
 \begin{quote}
-$dS=2(XdY-YdX)=\polyprint\dS.$
+$dS=2(XdY-YdX)=\bigl(\polyprint\dS\bigr)\,dT.$
 \end{quote}
 \end{boxedverbatim}
 \end{quote}
 \polymul\dSA\X\dY  \polymul\dSB\Y\dX
 \polysub\dS\dSA\dSB  \polymul\dS{2}\dS
 \begin{quote}
-$dS=2(XdY-YdX)=\polyprint\dS.$
+$dS=2(XdY-YdX)=\bigl(\polyprint\dS\bigr)\,dT.$
 \end{quote}
-\verb|polynom.sty|のバグ?のため多変数多項式の同類項はまとまらず、表示が長くなり過ぎる。
+\verb|polynom.sty|のバグ?のため多変数多項式の同類項がまとまらず、表示が長くなり過ぎる。
 ディスプレイ数式だと改行されないのでインラインで書いておいた。
 次は積分だ。
 \begin{quote}

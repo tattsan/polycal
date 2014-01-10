@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{polycal}[2014/01/09 0.01 (TS)]
+\ProvidesPackage{polycal}[2014/01/09 v0.01 (TS)]
 \RequirePackage{polynom}
 \providecommand\@fifthofsix[6]{#5}
 \providecommand\@secondofthree[3]{#2}
@@ -84,7 +84,7 @@
       \ifx\@empty#3\relax\else
           \expandafter\pld@DiffPoly@\expandafter#2#3+\relax+%
       \fi
-    \let#1\polycalc@tempb \pld@Simplify{#1}%
+      \let#1\polycalc@tempb \pld@Simplify{#1}%
     }
 
 \def\pld@DiffPoly@#1#2+{%
@@ -244,3 +244,7 @@
 \fi}
 
 \endinput
+%%% Local Variables: 
+%%% mode: japanese-latex
+%%% TeX-master: "demo2"
+%%% End: 
