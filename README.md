@@ -52,5 +52,6 @@ polynomパッケージは未完成のようで、正しく機能しない。
   * Version 0.01 2014/01/11
     \pld@IfMonomL@ (in polynom.sty) の bug fix.
     demo の書き換え。
+
 -- 
 SATO Tatsuya
