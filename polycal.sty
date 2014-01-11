@@ -1,10 +1,16 @@
+%%
+%% This is file `polycal.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% polycal.dtx  (with options: `package')
+%% 
+%% This work is copyright 2014 Tatsuya SATO.
+%% 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{polycal}[2014/01/11 v0.01a (TS)]
+\ProvidesPackage{polycal}[2014/01/11 v0.01b (TS)]
 \RequirePackage{polynom}
-\providecommand\@fifthofsix[6]{#5}
-\providecommand\@secondofthree[3]{#2}
-\providecommand\@thirdofthree[3]{#3}
-
 \newcommand*\polydefine[2]{\pld@GetPoly#1{}{#2}}
 
 \newcommand*\polydiff[1]{%
@@ -31,30 +37,31 @@
   {\pld@SubstPolyPoly#1\pld@polya\pld@polyb\pld@polyc
     \ignorespaces}}
 
-\newcommand*\polysimplify{%
-  \pld@GetPoly{\pld@polya}%
-  {\pld@Simplify{\pld@polya}
-    \ignorespaces}}
-
 \newcommand*\polysubstsqrt[1]{%
   \pld@GetPoly{\pld@polya\pld@polyb\pld@polyc}%
   {\pld@SubstSqrtPoly#1\pld@polya\pld@polyb\pld@polyc
     \ignorespaces}}
 
+\providecommand\@fifthofsix[6]{#5}
+\providecommand\@secondofthree[3]{#2}
+\providecommand\@thirdofthree[3]{#3}
 
-\def\pld@SubstSqrtPoly#1#2#3#4{%
-  \edef\pldc@var@letter{\expandafter\@fifthofsix#2}%
-  \edef\pldc@numer@sqrt{\expandafter\@secondofthree#3}%
-  \edef\pldc@denom@sqrt{\expandafter\@thirdofthree#3}%
-  \edef\pld@polyd{%
-    \noexpand\pld@R{1}{1}\noexpand\pld@V{\pldc@var@letter }{2}%
-    +\noexpand\pld@R{-\pldc@numer@sqrt }{\pldc@denom@sqrt }}%
-  \pld@DividePoly#4\pld@polyd
-  \let\pldc@main@formula\pld@remainder
-  \pld@FDefSqrt{\pldc@numer@sqrt}{\pldc@denom@sqrt}\let\pldc@sqrt@inner\pld@temp
-  \def\pldc@sqrt@outer{\pld@R {1}{1}\pld@S {\pldc@sqrt@inner }{1}}%
-  \pld@SubstNumPoly#1#2\pldc@sqrt@outer\pldc@main@formula%
-}
+\def\pld@DiffPoly#1#2#3{%
+      \let\polycalc@tempb\@empty%
+      \ifx\@empty#3\relax\else
+          \expandafter\pld@DiffPoly@\expandafter#2#3+\relax+%
+      \fi
+      \let#1\polycalc@tempb \pld@Simplify{#1}%
+    }
+
+\def\pld@DiffPoly@#1#2+{%
+  \let\polycalc@tempa\@empty
+    \ifx\relax#2 \relax
+    \else
+        \pld@DiffMonom\polycalc@tempa#1{#2}%
+        \pld@ExtendPoly\polycalc@tempb{\polycalc@tempa}%
+        \expandafter\pld@DiffPoly@\expandafter#1%
+\fi}
 
 \def\pld@DiffMonom#1#2#3{%
     \let#1\@empty
@@ -79,21 +86,21 @@
     \expandafter\pld@DiffMonom@\expandafter#1\expandafter#2%
     \fi}
 
-\def\pld@DiffPoly#1#2#3{%
-      \let\polycalc@tempb\@empty%
+\def\pld@IntPoly#1#2#3{%
+      \let\polycalc@tempb\@empty
       \ifx\@empty#3\relax\else
-          \expandafter\pld@DiffPoly@\expandafter#2#3+\relax+%
+          \expandafter\pld@IntPoly@\expandafter#2#3+\relax+%
       \fi
-      \let#1\polycalc@tempb \pld@Simplify{#1}%
+    \let#1\polycalc@tempb \pld@Simplify{#1}%
     }
 
-\def\pld@DiffPoly@#1#2+{%
+\def\pld@IntPoly@#1#2+{%
   \let\polycalc@tempa\@empty
     \ifx\relax#2 \relax
     \else
-        \pld@DiffMonom\polycalc@tempa#1{#2}%
+        \pld@IntMonom\polycalc@tempa#1{#2}%
         \pld@ExtendPoly\polycalc@tempb{\polycalc@tempa}%
-        \expandafter\pld@DiffPoly@\expandafter#1%
+        \expandafter\pld@IntPoly@\expandafter#1%
 \fi}
 
 \def\pld@IntMonom#1#2#3{%
@@ -118,21 +125,21 @@
     \expandafter\pld@IntMonom@\expandafter#1\expandafter#2%
     \fi}
 
-\def\pld@IntPoly#1#2#3{%
+\def\pld@SubstNumPoly#1#2#3#4{%
       \let\polycalc@tempb\@empty
-      \ifx\@empty#3\relax\else
-          \expandafter\pld@IntPoly@\expandafter#2#3+\relax+%
+      \ifx\@empty#4\relax\else
+          \expandafter\pld@SubstNumPoly@\expandafter#2\expandafter#3#4+\relax+%
       \fi
     \let#1\polycalc@tempb \pld@Simplify{#1}%
     }
 
-\def\pld@IntPoly@#1#2+{%
+\def\pld@SubstNumPoly@#1#2#3+{%
   \let\polycalc@tempa\@empty
-    \ifx\relax#2 \relax
+    \ifx\relax#3 \relax
     \else
-        \pld@IntMonom\polycalc@tempa#1{#2}%
+        \pld@SubstNumMonom\polycalc@tempa#1#2{#3}%
         \pld@ExtendPoly\polycalc@tempb{\polycalc@tempa}%
-        \expandafter\pld@IntPoly@\expandafter#1%
+        \expandafter\pld@SubstNumPoly@\expandafter#1\expandafter#2%
 \fi}
 
 \def\pld@SubstNumMonom#1#2#3#4{%
@@ -166,33 +173,22 @@
     \expandafter\pld@SubstNumMonom@\expandafter#1\expandafter#2\expandafter#3%
     \fi}
 
-\def\pld@SubstNumPoly#1#2#3#4{%
+\def\pld@SubstPolyPoly#1#2#3#4{%
       \let\polycalc@tempb\@empty
       \ifx\@empty#4\relax\else
-          \expandafter\pld@SubstNumPoly@\expandafter#2\expandafter#3#4+\relax+%
+          \expandafter\pld@SubstPolyPoly@\expandafter#2\expandafter#3#4+\relax+%
       \fi
     \let#1\polycalc@tempb \pld@Simplify{#1}%
     }
 
-\def\pld@SubstNumPoly@#1#2#3+{%
+\def\pld@SubstPolyPoly@#1#2#3+{%
   \let\polycalc@tempa\@empty
     \ifx\relax#3 \relax
     \else
-        \pld@SubstNumMonom\polycalc@tempa#1#2{#3}%
+        \pld@SubstPolyMonom\polycalc@tempa#1#2{#3}%
         \pld@ExtendPoly\polycalc@tempb{\polycalc@tempa}%
-        \expandafter\pld@SubstNumPoly@\expandafter#1\expandafter#2%
+        \expandafter\pld@SubstPolyPoly@\expandafter#1\expandafter#2%
 \fi}
-
-\def\pld@PowerPoly#1#2#3{%
-  \ifnum#3=\z@ \def#1{\pld@R{1}{1}}%
-  \else
-    \@tempcnta#3\advance\@tempcnta-1
-    \edef\@tempa{\the\@tempcnta}%
-    \pld@PowerPoly#1#2\@tempa
-    \let\@tempb#1
-    \pld@MultiplyPoly#1\@tempb#2%
-  \fi
-}
 
 \def\pld@SubstPolyMonom#1#2#3#4{%
     \def#1{\pld@R{1}{1}}%
@@ -226,22 +222,31 @@
     \expandafter\pld@SubstPolyMonom@\expandafter#1\expandafter#2\expandafter#3%
     \fi}
 
-\def\pld@SubstPolyPoly#1#2#3#4{%
-      \let\polycalc@tempb\@empty
-      \ifx\@empty#4\relax\else
-          \expandafter\pld@SubstPolyPoly@\expandafter#2\expandafter#3#4+\relax+%
-      \fi
-    \let#1\polycalc@tempb \pld@Simplify{#1}%
-    }
+\def\pld@PowerPoly#1#2#3{%
+  \ifnum#3=\z@ \def#1{\pld@R{1}{1}}%
+  \else
+    \@tempcnta#3\advance\@tempcnta-1
+    \edef\@tempa{\the\@tempcnta}%
+    \pld@PowerPoly#1#2\@tempa
+    \let\@tempb#1
+    \pld@MultiplyPoly#1\@tempb#2%
+  \fi
+}
 
-\def\pld@SubstPolyPoly@#1#2#3+{%
-  \let\polycalc@tempa\@empty
-    \ifx\relax#3 \relax
-    \else
-        \pld@SubstPolyMonom\polycalc@tempa#1#2{#3}%
-        \pld@ExtendPoly\polycalc@tempb{\polycalc@tempa}%
-        \expandafter\pld@SubstPolyPoly@\expandafter#1\expandafter#2%
-\fi}
+\def\pld@SubstSqrtPoly#1#2#3#4{%
+  \edef\pldc@var@letter{\expandafter\@fifthofsix#2}%
+  \edef\pldc@numer@sqrt{\expandafter\@secondofthree#3}%
+  \edef\pldc@denom@sqrt{\expandafter\@thirdofthree#3}%
+  \edef\pld@polyd{%
+    \noexpand\pld@R{1}{1}\noexpand\pld@V{\pldc@var@letter }{2}%
+    +\noexpand\pld@R{-\pldc@numer@sqrt }{\pldc@denom@sqrt }}%
+  \let\pld@stage\maxdimen
+  \pld@DividePoly#4\pld@polyd
+  \let\pldc@main@formula\pld@remainder
+  \pld@FDefSqrt{\pldc@numer@sqrt}{\pldc@denom@sqrt}\let\pldc@sqrt@inner\pld@temp
+  \def\pldc@sqrt@outer{\pld@R {1}{1}\pld@S {\pldc@sqrt@inner }{1}}%
+  \pld@SubstNumPoly#1#2\pldc@sqrt@outer\pldc@main@formula%
+}
 
 %%%%%% The folowing is a bug fix of \pld@IfMonomL@ in polynom.sty.
 \def\pld@IfMonomL@#1\pld@V#2#3#4\@empty#5\pld@V#6#7#8\@empty{%
@@ -265,5 +270,8 @@
         \fi
     \fi \fi
     \pld@next}
-
+%%
+%%
 \endinput
+%%
+%% End of file `polycal.sty'.

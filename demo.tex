@@ -65,7 +65,7 @@ ZR氏の「冬休み課題\ajMaru2：円周率を使わない話」を読んだ�
 + 3(1-t)^2t\begin{pmatrix}  1 \\ a \end{pmatrix}
 + 3(1-t)t^2\begin{pmatrix}  a \\ 1 \end{pmatrix}
 + t^3\begin{pmatrix}  0 \\ 1 \end{pmatrix}
-\qquad\left(a=\dfrac43\bigl(\sqrt2-1\bigr),\  0\le t\le 1\right)
+\qquad\left(a=\frac43\bigl(\sqrt2-1\bigr),\  0\le t\le 1\right)
 \]
 で表される。このため囲まれた部分の面積はせいぜい2次の無理数で $\pi$ は現れない。
 
@@ -88,7 +88,7 @@ ZR氏の「冬休み課題\ajMaru2：円周率を使わない話」を読んだ�
 \end{quote}
 ここで $a$ は
 \[
-  a=\dfrac43\bigl(\sqrt2-1\bigr)
+  a=\frac43\bigl(\sqrt2-1\bigr)
 \]
 であるが、この値の代入は最後に行なう。
 この \verb+\x,\y+ を表示させるには \verb+\polyprint+ を用いる。
@@ -116,7 +116,7 @@ ZR氏の「冬休み課題\ajMaru2：円周率を使わない話」を読んだ�
   dx &= (\polyprint\dx)\,dt, & dy &= (\polyprint\dy)\,dt.
 \end{align*}    
 次に面積要素を定義する。円の面積を計算するため、
-$\dfrac12(xdy-ydx)$ の4倍を$dS$と定めよう。
+$\frac12(xdy-ydx)$ の4倍を$dS$と定めよう。
 \begin{quote}
 \begin{boxedverbatim}
 \polymul\dSA\x\dy  \polymul\dSB\y\dx
@@ -144,7 +144,7 @@ $\dfrac12(xdy-ydx)$ の4倍を$dS$と定めよう。
 \polyint\St{t}\dS
 \polysubstnum\S{t}{1}\St
 \[ S = \int_0^1dS = \polyprint\S. \]
-最後に$a$の値を代入しよう。まずは$b=\sqrt2$として、$a=\dfrac43(b-1)$を代入する。
+最後に$a$の値を代入しよう。まずは$b=\sqrt2$として、$a=\frac43(b-1)$を代入する。
 \begin{quote}
 \begin{boxedverbatim}
 \polysubst\S{a}{(4/3)(b-1)}\S
@@ -164,8 +164,8 @@ $\dfrac12(xdy-ydx)$ の4倍を$dS$と定めよう。
 \[ \polyset{delims={\left.}{\right.}} S=\polyprint\S. \]
 \normalsize
 \section{パラメータ$\boldsymbol a$のチューニング}
-ところで $a=\dfrac43\bigl(\sqrt2-1\bigr)$ という値は、曲線が
-$t=\dfrac12$ で円上の点 $\left(\dfrac1{\sqrt2\ },\dfrac1{\sqrt2\ }\right)$
+ところで $a=\frac43\bigl(\sqrt2-1\bigr)$ という値は、曲線が
+$t=\frac12$ で円上の点 $\left(\frac1{\sqrt2\ },\frac1{\sqrt2\ }\right)$
 を通過するように決めたものらしい。これだとベジェ曲線が完全に円の外側に
 位置することになるが、もう少し内側にひっこめた方が円からの最大偏差を減らせる。
 そこで例えば
@@ -196,7 +196,7 @@ $t=\dfrac12$ で円上の点 $\left(\dfrac1{\sqrt2\ },\dfrac1{\sqrt2\ }\right)$
 \begin{align*}
  I-1 &= \polyprint\J \\ &= \polyfactorize\J
 \end{align*}
-これより $a=\dfrac1{12}\bigl(\sqrt{385}-13\bigr)$ が得られる。
+これより $a=\frac1{12}\bigl(\sqrt{385}-13\bigr)$ が得られる。
 再度面積を計算すると
 \begin{quote}
 \begin{boxedverbatim}
