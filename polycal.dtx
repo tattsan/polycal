@@ -1,0 +1,765 @@
+% \iffalse
+%
+%This work is copyright 2014 Tatsuya SATO.
+%
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage{hyperref,polynom,polycal}
+
+\begin{document}
+    \DocInput{polycal.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+%^^A
+%^^A  Some definitions used for documentation.
+%^^A
+% \let\packagename\textsf
+% \newenvironment{describe}{\trivlist\item[]}{\endtrivlist}
+%^^A
+%^^A  end of these definitions
+%^^A
+%
+%\newbox\abstractbox
+%\setbox\abstractbox=\vbox{
+%   \begin{abstract}
+%   The \packagename{polycal} package adds calculus macros to \packagename{polynom}
+%   package. It can differentiate or integrate polynomials.
+%   \end{abstract}}
+%
+% \title{The \packagename{Polycal} Package}
+% \author{Tatsuya SATO}
+% \date{2014/01/12\enspace Version 0.01b\\ \box\abstractbox}
+% \maketitle
+%
+% \section{Introduction}
+%
+% The \packagename{polynom} package manipulates polynomials.
+% It supports multiplication, division, getting GCD of polynomials with 
+% Euclidean algorithm, factorization with coefficients in rational numbers.
+% But it lacks in calculus operation, and substitution commands.
+% \packagename{Polycal} package adds these commands to
+% \packagename{polynom} package.\bigskip
+% 
+% For one variable polynomial $P(x)$, substitution $P(a)$ can be obtained as
+% a remainder of division with $x-a$. Also dviding with $(x-a)^2$, one can
+% obtain $P'(a)(x-a)+P(a)$ as a remainder, and can get $P'(a)$.
+% But \packagename{polynom} package  can't deal with multivariate 
+% polynomial enough, so sometimes divsion fails. One can't specify main variable. 
+% So I implemented direct substitution commands.
+% 
+% \section{Acknowledgments}
+%
+% I wish to thank
+% Carsten Heinz, and Hendri Adriaens
+% for creation and maintainance of \packagename{polynom} package.
+% \section{Usage}
+% See the manual of \packagename{polynom} package for a basic usage of original
+% commands. This manual explains newly added commands.
+%
+% \subsection{Definition of polynomials}
+% First, specify variables you'll use.
+% \begin{quote}
+%   |\polyset{vars=xab}|
+% \end{quote}
+% \polyset{vars=xab}
+% Define some polynomials using |\polydefine|.
+% \begin{macro}{\polydefine}
+% \meta{macro}\marg{polynomial}
+% \end{macro}
+% \begin{quote}
+%   |\polydefine\fx{x^2} \polydefine\gx{(a+b)x-ab}|
+% \end{quote}
+% \polyset{vars=xab}\polydefine\fx{x^2} \polydefine\gx{(a+b)x-ab}
+% Polynomials are set to macros |\fx| and |\gx|.
+% You can print them using |\polyprint|:
+% \begin{quote}
+% |\[ f(x)=\polyprint\fx,\quad\quad  g(x)=\polyprint\gx. \]|
+% \end{quote}
+% \[ f(x)=\polyprint\fx,\quad\quad  g(x)=\polyprint\gx. \]
+% Never print |\fx| or |\gx|  directly.
+%\subsection{Differentiation}
+% You can differentiate polynomials using |\polydiff|.
+% \begin{macro}{\polydiff}
+% \meta{macro}\marg{variable}\marg{polynomial}
+% \end{macro}
+% \begin{quote}
+%  |\polydiff\Dfx{x}\fx|\medskip\\
+%  |\[ \frac{df(x)}{dx}=\polyprint\Dfx. \]|
+% \end{quote}
+% \polydiff\Dfx{x}\fx
+% \[ \frac{df(x)}{dx}=\polyprint\Dfx. \]
+% If you define |\x| as |\polydefine\x{x}| \polydefine\x{x},
+% you can write this operation as follows.
+% \begin{quote}
+% |\polydiff\aa{x}{x^2}   \polydiff\bb{x}\fx|\\
+% |\polydiff\cc\x{x^2}    \polydiff\dd\x\fx|
+% \end{quote}
+% \polydiff\aa{x}{x^2} \polydiff\bb{x}\fx \polydiff\cc\x{x^2} \polydiff\dd\x\fx
+% |\[\polyprint\aa, \polyprint\bb, \polyprint\cc, \polyprint\dd.\]|
+% \[\polyprint\aa, \polyprint\bb, \polyprint\cc, \polyprint\dd.\]
+% \let\aa\relax \let\bb\relax \let\cc\relax \let\cc\relax
+% You can differentiate with another variable:
+% \begin{quote}
+% |\polydiff\Dag{a}\gx \polydiff\Dbg{b}\gx|\\
+% |\[ \frac{\partial g(x,a,b)}{\partial a} =\polyprint\Dag,\quad|\\
+% |   \frac{\partial g(x,a,b)}{\partial b} =\polyprint\Dbg. \]|
+% \end{quote}
+% \polydiff\Dag{a}\gx \polydiff\Dbg{b}\gx
+% \[
+% \frac{\partial g(x,a,b)}{\partial a} =\polyprint\Dag,\quad
+% \frac{\partial g(x,a,b)}{\partial b} =\polyprint\Dbg.
+% \]
+% But in this manual, $g(x)$ will be treated as one variable polynomial.
+% \begin{quote}
+%  |\polydiff\Dgx{x}\gx  \[ \frac{dg(x)}{dx}=\polyprint\Dgx. \]|
+% \end{quote}
+%  \polydiff\Dgx{x}\gx  \[ \frac{dg(x)}{dx}=\polyprint\Dgx. \]
+%\subsection{Integration}
+% Now we will calculate area between $y=f(x)$ and $y=g(x)$.
+% \begin{quote}
+%   |\polysub\hx\gx\fx|\\
+%   |\[ h(x)=g(x)-f(x)=\polyprint\hx. \]|
+% \end{quote}
+%   \polysub\hx\gx\fx
+%   \[ h(x)=g(x)-f(x)=\polyprint\hx. \]
+% We will integrate this function.
+% \begin{macro}{\polyint}
+% \meta{macro}\marg{variable}\marg{polynomial}
+% \end{macro}
+% caclulates indefinite integral from \meta{variable}$=0$.
+%   \begin{quote}
+%     |\polyint\Hx{x}\hx \[ H(x)=\int_0^x h(t)dt= \polyprint\Hx. \]|
+%   \end{quote}
+%     \polyint\Hx{x}\hx \[ H(x)=\int_0^x h(t)dt= \polyprint\Hx. \]
+%\subsection{Substitution}
+% And definite integral can be obtained by substitution.
+% \begin{macro}{\polysubst}
+% \meta{macro}\marg{variable}\marg{polynomial-1}\marg{polynomial-2}
+% \end{macro}
+% This macro substitute \meta{polynomial-1} for \meta{variable} in \meta{polynomial-2}.
+%   \begin{quote}
+%     |\polysubst\Ha{x}{a}\Hx \polysubst\Hb{x}{b}\Hx  \polysub\S\Hb\Ha |\\
+%     |\[ S=\int_a^bh(x)dx=H(b)-H(a)=\polyprint\S. \]|
+%   \end{quote}
+%     \polysubst\Ha{x}{a}\Hx \polysubst\Hb{x}{b}\Hx   \polysub\S\Hb\Ha
+%     \[ S=\int_a^bh(x)dx=H(b)-H(a)=\polyprint\S. \]
+% Unfortunately, factorization of multivariate polynomial is not currently supported,
+% so this can not be arranged to $S=\displaystyle\frac{(b-a)^3}{6}$ automatically.
+% You can also Substitute a polynomial for a variable. 
+% For example, let $b=a^2-2$ in $S$.
+% \begin{quote}
+%   |\polysubst\SS{b}{a^2-2}\S| \\
+%   |\[ b=a^2-2\ \  \Rightarrow\ \  S=\polyprint\SS=\polyfactorize\SS. \]|
+% \end{quote}
+%   \polysubst\SS{b}{a^2-2}\S
+%   \[ b=a^2-2\ \  \Rightarrow\ \  S=\polyprint\SS=\polyfactorize\SS. \]
+% 
+% \begin{macro}{\polysubstnum}
+% \meta{macro}\marg{variable}\marg{rational number}\marg{polynomial}
+% \end{macro}
+% To substitute a number, there's another command. Compared with |\polysubst|, 
+% it is based on different algorithm, but not so fast. Experimental.
+% \begin{macro}{\polysubstsqrt}
+% \meta{macro}\marg{variable}\marg{rational number}\marg{1-variable polynomial}
+% \end{macro}
+% This macro substitute $\sqrt{\meta{rational number}}$ for \meta{variable}.
+% Note that polynomial should be one variable. Let substitute $a=\sqrt5$
+% in $S=\polyfactorize\SS$.
+% \begin{quote}
+% |\polysubstsqrt\SSS{a}{5}\SS \[ S=\polyprint\SSS. \]|
+% \end{quote}
+% \polysubstsqrt\SSS{a}{5}\SS \[ S=\polyprint\SSS. \]
+% To eliminate parentheses, set |\polyset{delims={}{}}|.
+% \begin{quote}
+%   |\[\polyset{delims={}{}}S=\polyprint\SSS. \]|
+% \end{quote}
+%   \[\polyset{delims={}{}}S=\polyprint\SSS. \]
+%
+% \CheckSum{625}
+% \StopEventually{}
+% \section{Implementation}
+%
+% Let's start with identification.
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{polycal}[2014/01/11 v0.01b (TS)]
+\RequirePackage{polynom}
+%    \end{macrocode}
+% \subsection{The user commands}
+% \begin{macro}{\polydefine}
+% \meta{macro}\marg{polynomial}
+% \begin{describe}
+% Transform \meta{polynomial} to internal representation, and set it to \meta{macro}.
+% \end{describe}
+%    \begin{macrocode}
+\newcommand*\polydefine[2]{\pld@GetPoly#1{}{#2}}
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \begin{macro}{\polydiff}
+% \meta{macro}\marg{variable}\marg{polynomial}
+% \begin{describe}
+% Differentiate \meta{polynomial} with respect to \meta{variable}, 
+% and  set it to \meta{macro}.
+% \end{describe}
+%    \begin{macrocode}
+\newcommand*\polydiff[1]{%
+  \pld@GetPoly{\pld@polya\pld@polyb}%
+  {\pld@DiffPoly#1\pld@polya\pld@polyb
+    \ignorespaces}}
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \begin{macro}{\polyint}
+% \meta{macro}\marg{variable}\marg{polynomial}
+% \begin{describe}
+% Integrate \meta{polynomial}  from 0, with respect to \meta{variable}.
+% \end{describe}
+%    \begin{macrocode}
+\newcommand*\polyint[1]{%
+  \pld@GetPoly{\pld@polya\pld@polyb}%
+  {\pld@IntPoly#1\pld@polya\pld@polyb
+    \ignorespaces}}
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \begin{macro}{\polysubstnum}
+% \meta{macro}\marg{variable}\marg{rational number}\marg{polynomial}
+% \begin{describe}
+% Substitute \meta{rational number} for \meta{variable} in  \meta{polynomial}.
+% \end{describe}
+%    \begin{macrocode}
+\newcommand*\polysubstnum[1]{%
+  \pld@GetPoly{\pld@polya\pld@polyb\pld@polyc}%
+  {\pld@SubstNumPoly#1\pld@polya\pld@polyb\pld@polyc
+    \ignorespaces}}
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \begin{macro}{\polypower}
+% \meta{macro}\marg{variable}\marg{natural number}\marg{polynomial}
+% \begin{describe}
+% Set \meta{natural number}th power of \meta{polynomial} to \meta{macro}.
+% \end{describe}
+%    \begin{macrocode}
+\newcommand*\polypower[1]{%
+  \pld@GetPoly{\pld@polya}%
+  {\pld@PowerPoly#1\pld@polya}}
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \begin{macro}{\polysubst}
+% \meta{macro}\marg{variable}\marg{polynomial-1}\marg{polynomial-2}
+% \begin{describe}
+% Substitute \meta{polynomial-1} for \meta{variable} in  \meta{polynomial-2}.
+% \end{describe}
+%    \begin{macrocode}
+\newcommand*\polysubst[1]{%
+  \pld@GetPoly{\pld@polya\pld@polyb\pld@polyc}%
+  {\pld@SubstPolyPoly#1\pld@polya\pld@polyb\pld@polyc
+    \ignorespaces}}
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \begin{macro}{\polysubstsqrt}
+% \meta{macro}\marg{variable}\marg{rational number}\marg{1-variable polynomial}
+% \begin{describe}
+% Substitute non negative square root of \meta{rational number} for
+%  \meta{variable} in \meta{1-variable polynomial}.
+% \end{describe}
+%    \begin{macrocode}
+\newcommand*\polysubstsqrt[1]{%
+  \pld@GetPoly{\pld@polya\pld@polyb\pld@polyc}%
+  {\pld@SubstSqrtPoly#1\pld@polya\pld@polyb\pld@polyc
+    \ignorespaces}}
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \subsection{Internal routines}
+% The following three macros gets parameter in internal representation of factors.
+%
+% \begin{macro}{\@fifthofsix}
+% \begin{macro}{\@secondofthree}
+% \begin{macro}{\@thirdofthree}
+% \begin{describe}
+% For example, |\polydefine\X{X}| is equivalent to |\def\X{\pld@R{1}{1}\pld@V{X}{1}}|,
+% and |\@fifthofsix\X| gets variable letter |X|.
+% \end{describe}
+%    \begin{macrocode}
+\providecommand\@fifthofsix[6]{#5}
+\providecommand\@secondofthree[3]{#2}
+\providecommand\@thirdofthree[3]{#3}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+
+% \subsubsection{Differentiation}
+% \begin{macro}{\pld@DiffPoly}
+% \meta{macro a}\meta{macro b}\meta{macro c}
+% \begin{describe}
+% \meta{macro a} gets the derivative
+% $\displaystyle\frac{\,d\meta{macro c}\,}{\,d\meta{macro b}\,}$.
+% \end{describe}
+%    \begin{macrocode}
+\def\pld@DiffPoly#1#2#3{%
+      \let\polycalc@tempb\@empty%
+      \ifx\@empty#3\relax\else
+          \expandafter\pld@DiffPoly@\expandafter#2#3+\relax+%
+      \fi
+      \let#1\polycalc@tempb \pld@Simplify{#1}%
+    }
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \begin{macro}{\pld@DiffPoly@}
+% \begin{describe}
+% This macro cuts away a monomial in the third argument \meta{macro c} of
+% |\pld@DiffPoly|, send it to |\pld@DiffMonom|.
+% \end{describe}
+%    \begin{macrocode}
+\def\pld@DiffPoly@#1#2+{%
+  \let\polycalc@tempa\@empty
+    \ifx\relax#2 \relax
+    \else
+        \pld@DiffMonom\polycalc@tempa#1{#2}%
+        \pld@ExtendPoly\polycalc@tempb{\polycalc@tempa}%
+        \expandafter\pld@DiffPoly@\expandafter#1%
+\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \begin{macro}{\pld@DiffMonom}
+% \meta{macro a}\meta{macro b}\meta{macro c}
+% \begin{describe}
+% This macro decrease the degree of the monomial \meta{macro c} by 1
+% with respect to variable \meta{macro b} and send it to |\pld@DiffMonom@|.
+% \end{describe}
+%    \begin{macrocode}
+\def\pld@DiffMonom#1#2#3{%
+    \let#1\@empty
+    \edef\pldc@var@letter{\expandafter\@fifthofsix#2}%
+    \def\@tempb{#3}\edef\@tempc{\noexpand\pld@V{\pldc@var@letter}{-1}}%
+    \pld@MultiplyPoly\@tempa\@tempb\@tempc%
+    \def\pldc@CallMono@##1{%
+    \expandafter\pld@DiffMonom@\expandafter #1\expandafter##1%
+    \@tempa\relax\@empty\@empty\relax\relax}%
+    \expandafter\pldc@CallMono@\pldc@var@letter
+}
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \begin{macro}{\pld@DiffMonom@}
+% \meta{macro a}\meta{variable letter}\meta{macro b}\marg{content c}\marg{content d}
+% \begin{describe}
+% This macro cuts away a factor \meta{macro b}\marg{content c}\marg{content d}, 
+% of the monomial argument \meta{macro c} of |\pld@DiffMonom|.
+% If the factor is a power of \meta{variable letter}, do $x^{n-1}\ \to\ nx^{n-1}$.
+% \end{describe}
+%    \begin{macrocode}
+\def\pld@DiffMonom@#1#2#3#4#5{%
+    \ifx\relax#3
+      \relax \expandafter\@gobbletwo
+    \else
+      \ifx #3\pld@V \if#4#2
+            \@tempcnta #5 \advance\@tempcnta 1
+            \expandafter\pld@Extend\expandafter#1{\expandafter\pld@R\expandafter{\the\@tempcnta}{1}}%
+      \fi\fi
+      \pld@Extend#1{\noexpand#3{#4}{#5}}%
+    \expandafter\pld@DiffMonom@\expandafter#1\expandafter#2%
+    \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \subsubsection{Integration}
+% \begin{macro}{\pld@IntPoly}
+% \meta{macro a}\meta{macro b}\meta{macro c}
+% \begin{describe}
+% \meta{macro a} gets the integration
+% $\displaystyle\int_0^{\meta{macro b}}\meta{macro c}d\meta{macro b}$.
+% \end{describe}
+%    \begin{macrocode}
+\def\pld@IntPoly#1#2#3{%
+      \let\polycalc@tempb\@empty
+      \ifx\@empty#3\relax\else
+          \expandafter\pld@IntPoly@\expandafter#2#3+\relax+%
+      \fi
+    \let#1\polycalc@tempb \pld@Simplify{#1}%
+    }
+%    \end{macrocode}
+% \end{macro}
+%
+
+
+% \begin{macro}{\pld@IntPoly@}
+% \begin{describe}
+% This macro cuts away a monomial in the third argument \meta{macro c} of
+% |\pld@IntPoly|, send it to |\pld@IntMonom|.
+% \end{describe}
+%    \begin{macrocode}
+\def\pld@IntPoly@#1#2+{%
+  \let\polycalc@tempa\@empty
+    \ifx\relax#2 \relax
+    \else
+        \pld@IntMonom\polycalc@tempa#1{#2}%
+        \pld@ExtendPoly\polycalc@tempb{\polycalc@tempa}%
+        \expandafter\pld@IntPoly@\expandafter#1%
+\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \begin{macro}{\pld@IntMonom}
+% \meta{macro a}\meta{macro b}\meta{macro c}
+% \begin{describe}
+% This macro increase the degree of the monomial \meta{macro c} by 1
+% with respect to variable \meta{macro b} and send it to |\pld@IntMonom@|.
+% \end{describe}
+%    \begin{macrocode}
+\def\pld@IntMonom#1#2#3{%
+    \let#1\@empty
+    \def\@tempb{#3}\def\@tempc{#2}%
+    \pld@MultiplyPoly\@tempa\@tempb\@tempc
+    \edef\pldc@var@letter{\expandafter\@fifthofsix#2}%
+    \def\pldc@CallMono@##1{%
+    \expandafter\pld@IntMonom@\expandafter #1\expandafter##1%
+    \@tempa\relax\@empty\@empty\relax\relax}%
+    \expandafter\pldc@CallMono@\pldc@var@letter
+}
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \begin{macro}{\pld@IntMonom@}
+% \meta{macro a}\meta{variable letter}\meta{macro b}\marg{content c}\marg{content d}
+% \begin{describe}
+% This macro cuts away a factor \meta{macro b}\marg{content c}\marg{content d}, 
+% of the monomial argument \meta{macro c} of |\pld@IntMonom|.
+% If the factor is a power of \meta{variable letter}, 
+% do $\displaystyle x^{n+1}\ \to\ \frac{x^{n+1}}{n+1}$.
+% \end{describe}
+%    \begin{macrocode}
+\def\pld@IntMonom@#1#2#3#4#5{%
+    \ifx\relax#3 \relax
+      \relax \expandafter\@gobbletwo
+    \else
+      \ifx #3\pld@V \if#4#2
+        \pld@Extend#1{\noexpand\pld@R{1}{#5}}%
+      \fi\fi
+      \pld@Extend#1{\noexpand#3{#4}{#5}}%
+    \expandafter\pld@IntMonom@\expandafter#1\expandafter#2%
+    \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \subsubsection{Substitution of number}
+% \begin{macro}{\pld@SubstNumPoly}
+% \meta{macro a}\meta{macro b}\meta{macro c}\meta{macro d}
+% \begin{describe}
+% Substitute rational number \meta{macro c} for variable \meta{macro b} in the
+% polynomial \meta{macro d}, and stores it to \meta{macro a}.
+% \end{describe}
+%    \begin{macrocode}
+\def\pld@SubstNumPoly#1#2#3#4{%
+      \let\polycalc@tempb\@empty
+      \ifx\@empty#4\relax\else
+          \expandafter\pld@SubstNumPoly@\expandafter#2\expandafter#3#4+\relax+%
+      \fi
+    \let#1\polycalc@tempb \pld@Simplify{#1}%
+    }
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \begin{macro}{\pld@SubstNumPoly@}
+% \begin{describe}
+% This macro cuts away a monomial in the fourth argument \meta{macro d} of
+% |\pld@SubstNumPoly|, send it to |\pld@SubstNumMonom|.
+% \end{describe}
+%    \begin{macrocode}
+\def\pld@SubstNumPoly@#1#2#3+{%
+  \let\polycalc@tempa\@empty
+    \ifx\relax#3 \relax
+    \else
+        \pld@SubstNumMonom\polycalc@tempa#1#2{#3}%
+        \pld@ExtendPoly\polycalc@tempb{\polycalc@tempa}%
+        \expandafter\pld@SubstNumPoly@\expandafter#1\expandafter#2%
+\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \begin{macro}{\pld@SubstNumMonom}
+% \meta{macro a}\meta{macro b}\meta{macro c}\meta{macro d}
+% \begin{describe}
+% This macro only replace \meta{macro b} with its variable letter,
+% and sends four arguments to |\pld@SubstNumMonom@|.
+% \end{describe}
+%    \begin{macrocode}
+\def\pld@SubstNumMonom#1#2#3#4{%
+    \let#1\@empty
+    \edef\pldc@var@letter{\expandafter\@fifthofsix#2}%
+    \def\pldc@CallMono@##1{%
+    \expandafter\pld@SubstNumMonom@\expandafter#1\expandafter##1\expandafter#3\expandafter%
+    #4\relax\@empty\@empty\relax\relax}%
+    \expandafter\pldc@CallMono@\pldc@var@letter
+}
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \begin{macro}{\pld@SubstNumMonom@}
+%  \meta{macro a}\meta{variable letter}\meta{macro b}\meta{macro c}\marg{contents d}\marg{contents e}
+% \begin{describe}
+% This macro cuts away a factor \meta{macro c}\marg{content d}\marg{content e}, 
+% of the monomial argument \meta{macro d} of |\pld@SubstNumMonom|.
+% If the factor contains \meta{variable letter} as variable,
+% this macro substitute the rational number \meta{macro b} for that variable.
+% \end{describe}
+%    \begin{macrocode}
+\def\pld@SubstNumMonom@#1#2#3#4#5#6{%
+    \ifx\relax#4 \relax \expandafter\@gobbletwo
+    \else
+      \ifx #4\pld@V
+          \if#5#2
+             \def\@tempb{\pld@R{-1}{1}}\def\@tempc{#3}%
+             \pld@MultiplyPoly\@tempa\@tempb\@tempc
+             \edef\@tempb{\noexpand\pld@V{#5}{1}}%
+             \pld@ExtendPoly\@tempb\@tempa \pld@Simplify\@tempb
+             \def\@tempc{\pld@V{#5}{#6}}%
+             \let\pld@stage\maxdimen
+             \pld@DividePoly\@tempc\@tempb \pld@Simplify\pld@remainder
+             \pld@Extend#1{\pld@remainder}%
+          \else
+             \pld@Extend#1{\noexpand#4{#5}{#6}}%
+          \fi
+      \else
+          \pld@Extend#1{\noexpand#4{#5}{#6}}%
+      \fi
+    \expandafter\pld@SubstNumMonom@\expandafter#1\expandafter#2\expandafter#3%
+    \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \subsubsection{Substitution of polynomial}
+% \begin{macro}{\pld@SubstPolyPoly}
+% \meta{macro a}\meta{macro b}\meta{macro c}\meta{macro d}
+% \begin{describe}
+% Substitute polynomial \meta{macro c} for variable \meta{macro b} in the
+% polynomial \meta{macro d}, and stores it to \meta{macro a}.
+% \end{describe}
+%    \begin{macrocode}
+\def\pld@SubstPolyPoly#1#2#3#4{%
+      \let\polycalc@tempb\@empty
+      \ifx\@empty#4\relax\else
+          \expandafter\pld@SubstPolyPoly@\expandafter#2\expandafter#3#4+\relax+%
+      \fi
+    \let#1\polycalc@tempb \pld@Simplify{#1}%
+    }
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \begin{macro}{\pld@SubstPolyPoly@}
+% \begin{describe}
+% This macro cuts away a monomial in the fourth argument \meta{macro d} of
+% |\pld@SubstPolyPoly|, send it to |\pld@SubstPolyMonom|.
+% \end{describe}
+%    \begin{macrocode}
+\def\pld@SubstPolyPoly@#1#2#3+{%
+  \let\polycalc@tempa\@empty
+    \ifx\relax#3 \relax
+    \else
+        \pld@SubstPolyMonom\polycalc@tempa#1#2{#3}%
+        \pld@ExtendPoly\polycalc@tempb{\polycalc@tempa}%
+        \expandafter\pld@SubstPolyPoly@\expandafter#1\expandafter#2%
+\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \begin{macro}{\pld@SubstPolyMonom}
+% \meta{macro a}\meta{macro b}\meta{macro c}\meta{macro d}
+% \begin{describe}
+% This macro only replace \meta{macro b} with its variable letter,
+% and sends four arguments to |\pld@SubstPolyMonom@|.
+% \end{describe}
+%    \begin{macrocode}
+\def\pld@SubstPolyMonom#1#2#3#4{%
+    \def#1{\pld@R{1}{1}}%
+    \edef\@tempb{\expandafter\@fifthofsix#2}%
+    \edef\pldc@var@letter{\expandafter\@fifthofsix#2}%
+    \def\pldc@CallMono@##1{%
+    \expandafter\pld@SubstPolyMonom@\expandafter#1\expandafter##1\expandafter#3\expandafter%
+    #4\relax\@empty\@empty\relax\relax}%
+   \expandafter\pldc@CallMono@\pldc@var@letter
+}
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \begin{macro}{\pld@SubstPolyMonom@}
+%  \meta{macro a}\meta{variable letter}\meta{macro b}\meta{macro c}\marg{contents d}\marg{contents e}
+% \begin{describe}
+% This macro cuts away a factor \meta{macro c}\marg{content d}\marg{content e}, 
+% of the monomial argument \meta{macro d} of |\pld@SubstPolyMonom|.
+% If the factor contains \meta{variable letter} as variable,
+% this macro substitute the polynomial \meta{macro b} for that variable.
+% \end{describe}
+%    \begin{macrocode}
+\def\pld@SubstPolyMonom@#1#2#3#4#5#6{%
+    \ifx\relax#4 \relax \expandafter\@gobbletwo
+    \else
+      \ifx #4\pld@V
+         \if#5#2
+             \edef\@tempa{\number#6}%
+             \pld@PowerPoly\@tempb#3\@tempa
+             \expandafter\def\expandafter\@tempa\expandafter{#1}%
+             \pld@MultiplyPoly#1\@tempa\@tempb
+          \else
+            \expandafter\def\expandafter\@tempa\expandafter{#1}%
+            \edef\@tempb{\noexpand#4{#5}{#6}}%
+            \pld@MultiplyPoly#1\@tempa\@tempb
+          \fi
+      \else
+          \expandafter\def\expandafter\@tempa\expandafter{#1}%
+          \edef\@tempb{\noexpand#4{#5}{#6}}%
+          \pld@MultiplyPoly#1\@tempa\@tempb
+      \fi
+    \expandafter\pld@SubstPolyMonom@\expandafter#1\expandafter#2\expandafter#3%
+    \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \begin{macro}{\pld@PowerPoly}
+% \meta{macro a}\meta{macro b}\marg{number a}
+% \begin{describe}
+% \meta{macro a} gets a \meta{number a}th power of polynomial \meta{macro b}.
+% \meta{number a} should be a non negative integer.
+% \end{describe}
+%    \begin{macrocode}
+\def\pld@PowerPoly#1#2#3{%
+  \ifnum#3=\z@ \def#1{\pld@R{1}{1}}%
+  \else
+    \@tempcnta#3\advance\@tempcnta-1
+    \edef\@tempa{\the\@tempcnta}%
+    \pld@PowerPoly#1#2\@tempa
+    \let\@tempb#1
+    \pld@MultiplyPoly#1\@tempb#2%
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \subsubsection{Substitution of square root}
+% \begin{macro}{\pld@SubstSqrtPoly}
+% \meta{macro a}\meta{macro b}\meta{macro c}\meta{macro d}
+% \begin{describe}
+% Substitute non negative square root of rational number \meta{macro c}
+% for variable \meta{macro b} in the \textbf{one variable} polynomial \meta{macro d},
+% and stores it to \meta{macro a}.
+% \end{describe}
+%    \begin{macrocode}
+\def\pld@SubstSqrtPoly#1#2#3#4{%
+  \edef\pldc@var@letter{\expandafter\@fifthofsix#2}%
+  \edef\pldc@numer@sqrt{\expandafter\@secondofthree#3}%
+  \edef\pldc@denom@sqrt{\expandafter\@thirdofthree#3}%
+  \edef\pld@polyd{%
+    \noexpand\pld@R{1}{1}\noexpand\pld@V{\pldc@var@letter }{2}%
+    +\noexpand\pld@R{-\pldc@numer@sqrt }{\pldc@denom@sqrt }}%
+  \let\pld@stage\maxdimen
+  \pld@DividePoly#4\pld@polyd
+  \let\pldc@main@formula\pld@remainder
+  \pld@FDefSqrt{\pldc@numer@sqrt}{\pldc@denom@sqrt}\let\pldc@sqrt@inner\pld@temp
+  \def\pldc@sqrt@outer{\pld@R {1}{1}\pld@S {\pldc@sqrt@inner }{1}}%
+  \pld@SubstNumPoly#1#2\pldc@sqrt@outer\pldc@main@formula%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \subsection{Miscellany}
+% \begin{macro}{\pld@IfMonomL@}
+% \begin{describe}
+% A bug fix of |\pld@IfMonomL@| in polynom.sty.
+% \end{describe}
+%    \begin{macrocode}
+%%%%%% The folowing is a bug fix of \pld@IfMonomL@ in polynom.sty.
+\def\pld@IfMonomL@#1\pld@V#2#3#4\@empty#5\pld@V#6#7#8\@empty{%
+    \let\pld@next\@empty
+          \ifx #6\relax \aftergroup\@secondoftwo
+    \else \ifx #2\relax \aftergroup\@firstoftwo
+    \else
+        \def\pld@va{#2}\def\pld@vb{#6}%
+        \ifx\pld@va\pld@vb
+            \ifnum#3=#7\relax
+                \def\pld@next{\pld@IfMonomL@#4\@empty#8\@empty}%
+            \else
+                \ifnum#3<#7\relax \aftergroup\@firstoftwo
+                            \else \aftergroup\@secondoftwo \fi
+            \fi
+        \else
+            % \pld@IfVarL#2\relax\@empty#6\relax\@empty
+            \pld@IfVarL#2#6%
+                {\aftergroup\@firstoftwo}%
+                {\aftergroup\@secondoftwo}%
+        \fi
+    \fi \fi
+    \pld@next}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+%
+% \begingroup\small
+% \section{History}
+% \renewcommand\labelitemi{--}
+% \begin{itemize}
+% \item[0.01] 2014/01/09 (private test version)
+%   \item Implemented |\pld@DiffPoly|,  |\pld@IntPoly|, |\pld@SubstNumPoly|, 
+%    |\pld@SubstPlyPoly|, |\pld@SubstSqrtPoly|.
+% \item[0.01a] 2014/01/11
+%   \item Fixed a bug in |\pld@IfMonomL@| of original \packagename{polynom} package.
+% \item[0.01b] 2014/01/12
+%   \item Wrote .dtx.
+%   \item Minor fix in |\pld@SubstSqrtPoly|.
+% \end{itemize}
+% \medskip
+%
+% \noindent TODO:
+% \begin{itemize}
+%   \item User definable order of variables.
+%   \item Rational functions and its derivatives.
+%   \item Vector calculus.
+%   \item Differential geometric operations.
+% \end{itemize}
+% \endgroup
+%
+%
+% \Finale
+%
+%%
+%%
+\endinput
