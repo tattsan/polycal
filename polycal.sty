@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{polycal}[2014/01/09 v0.01 (TS)]
+\ProvidesPackage{polycal}[2014/01/11 v0.01a (TS)]
 \RequirePackage{polynom}
 \providecommand\@fifthofsix[6]{#5}
 \providecommand\@secondofthree[3]{#2}
@@ -243,8 +243,27 @@
         \expandafter\pld@SubstPolyPoly@\expandafter#1\expandafter#2%
 \fi}
 
+%%%%%% The folowing is a bug fix of \pld@IfMonomL@ in polynom.sty.
+\def\pld@IfMonomL@#1\pld@V#2#3#4\@empty#5\pld@V#6#7#8\@empty{%
+    \let\pld@next\@empty
+          \ifx #6\relax \aftergroup\@secondoftwo
+    \else \ifx #2\relax \aftergroup\@firstoftwo
+    \else
+        \def\pld@va{#2}\def\pld@vb{#6}%
+        \ifx\pld@va\pld@vb
+            \ifnum#3=#7\relax
+                \def\pld@next{\pld@IfMonomL@#4\@empty#8\@empty}%
+            \else
+                \ifnum#3<#7\relax \aftergroup\@firstoftwo
+                            \else \aftergroup\@secondoftwo \fi
+            \fi
+        \else
+            % \pld@IfVarL#2\relax\@empty#6\relax\@empty
+            \pld@IfVarL#2#6%
+                {\aftergroup\@firstoftwo}%
+                {\aftergroup\@secondoftwo}%
+        \fi
+    \fi \fi
+    \pld@next}
+
 \endinput
-%%% Local Variables: 
-%%% mode: japanese-latex
-%%% TeX-master: "demo2"
-%%% End: 
