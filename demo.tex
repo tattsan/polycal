@@ -1,13 +1,23 @@
-\documentclass{jsarticle}
+\documentclass[dvipdfmx]{jsarticle}
 \usepackage[T1]{fontenc}
 \usepackage{polynom}
-\usepackage{polycal}
+\usepackage{polycal2}
 \usepackage{amsmath}
 \usepackage{moreverb}
-\usepackage[dvipdfmx]{hyperref}
+\usepackage{pict2e,color}
+\usepackage{hyperref}
 \usepackage{otf}
+
+
+\newcommand*{\VAbox}[2][b]{%
+\leavevmode\begingroup\setbox0=\hbox{#2}\parbox[#1]{\wd0}{\vspace{0pt}\box0}\endgroup
+}
+
+
 \title{\textsf{polycal}パッケージのデモ}\author{tattsan}\date{}
-\pagestyle{empty}
+
+
+
 \begin{document}
 \maketitle
 
@@ -17,13 +27,49 @@ ZR氏の「冬休み課題\ajMaru2：円周率を使わない話」を読んだ�
   \url{http://d.hatena.ne.jp/zrbabbler/20131231/1388478052}
   (\url{http://t.co/NjEtKJwLyO})
 \end{quote}
-\verb+\expandafter+  がよくわからない自分には格好の宿題だ。
-しかしこれは是非とも\textbf{\TeX で解かねばなるまい}。
+\verb+\expandafter+  がよくわからない人のための課題とあり、
+自分にはちょうどよいと思った。ただ
+\begin{quote}
+  「もはや全く以て TeX ネタじゃない…」  
+\end{quote}
+というZR氏の一人ボケツッコミが気になった。
+これは是非とも\textbf{\TeX で解かねばなるまい}。
 そこで既存の \textsf{polynom} パッケージに微分や積分のルーチンを追加する
 \textsf{polycal} パッケージを作成した。
-その結果 \verb|\expandafter|を書く羽目になった。
+\begin{quote}
+  \url{https://github.com/tattsan/polycal}
+\end{quote}
+その結果、大して理解していない \verb|\expandafter| をあちこちに書く羽目になった。
 以下\textsf{polycal} パッケージを利用してニセ円の面積を計算する。
-\section{面積計算}
+\section{問題の説明}
+\begin{quote}
+\begin{boxedverbatim}
+%(with pict2e and color package)
+\setlength{\unitlength}{1cm}
+\begin{picture}(2,2)
+\color{blue}\put(1,1){\circle*{2}}
+\end{picture}
+\end{boxedverbatim}
+\hfil
+\setlength{\unitlength}{1cm}
+  \begin{picture}(2,2)
+    \color{blue}\put(1,1){\circle*{2}}
+  \end{picture}
+\end{quote}
+課題は「上の図形の面積を円周率を用いずに求めてください」というもの。
+「円周率を用いずに」の部分もZR氏のサイトに解説されている。
+\textsf{pict2e}が描く円は3次ベジェ曲線による近似であり、上の例の第1象限部分は
+\[
+\begin{pmatrix}  x \\ y \end{pmatrix}
+= (1-t)^3\begin{pmatrix}  1 \\ 0 \end{pmatrix}
++ 3(1-t)^2t\begin{pmatrix}  1 \\ a \end{pmatrix}
++ 3(1-t)t^2\begin{pmatrix}  a \\ 1 \end{pmatrix}
++ t^3\begin{pmatrix}  0 \\ 1 \end{pmatrix}
+\qquad\left(a=\dfrac43\bigl(\sqrt2-1\bigr),\  0\le t\le 1\right)
+\]
+で表される。このため囲まれた部分の面積はせいぜい2次の無理数で $\pi$ は現れない。
+
+\section{面積の計算}
 まず変数の宣言。本当の変数$t$と文字定数$a,b$を変数扱いする。
 \polyset{vars=tab}
 \begin{quote}
@@ -56,9 +102,7 @@ ZR氏の「冬休み課題\ajMaru2：円周率を使わない話」を読んだ�
 \begin{align*}
   x &= \polyprint\x, & y &= \polyprint\y.
 \end{align*}
-表示されるのは簡約後の数式である。
-\newpage
-次にこれを微分する。
+表示されるのは簡約後の数式である。次にこれを微分する。
 \polydiff\dx{t}\x  \polydiff\dy{t}\y
 \begin{quote}
 \begin{boxedverbatim}
@@ -82,9 +126,6 @@ $\dfrac12(xdy-ydx)$ の4倍を$dS$と定めよう。
     &=(\polyprint\dS)\,dt.
 \end{align*}
 \end{boxedverbatim}
-% \begin{quote}
-% $dS=2(xdy-ydx)=\polyprint\dS.$
-% \end{quote}
 \end{quote}
 \polymul\dSA\x\dy  \polymul\dSB\y\dx
 \polysub\dS\dSA\dSB  \polymul\dS{2}\dS
@@ -122,7 +163,6 @@ $\dfrac12(xdy-ydx)$ の4倍を$dS$と定めよう。
 \polysubstsqrt\S{b}{2}\S \Huge
 \[ \polyset{delims={\left.}{\right.}} S=\polyprint\S. \]
 \normalsize
-\newpage
 \section{パラメータ$\boldsymbol a$のチューニング}
 ところで $a=\dfrac43\bigl(\sqrt2-1\bigr)$ という値は、曲線が
 $t=\dfrac12$ で円上の点 $\left(\dfrac1{\sqrt2\ },\dfrac1{\sqrt2\ }\right)$
