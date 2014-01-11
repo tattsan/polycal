@@ -47,11 +47,16 @@ polynomパッケージは未完成のようで、正しく機能しない。
 ### 更新履歴
 
   * Version 0.01 2014/01/09
-    初公開。
+    - 初公開。
 
   * Version 0.01a 2014/01/11
-    \pld@IfMonomL@ (in polynom.sty) の bug fix.
-    demo の書き換え。
+    - \pld@IfMonomL@ (in polynom.sty) の bug fix.
+    - demo の書き換え。
 
--- 
+  * Version 0.01b 2014/01/12
+    - Minor fix.
+    - dtx, ins と manual の作成。
+
+
+------------
 SATO Tatsuya
