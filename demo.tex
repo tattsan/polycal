@@ -8,15 +8,7 @@
 \usepackage{hyperref}
 \usepackage{otf}
 
-
-\newcommand*{\VAbox}[2][b]{%
-\leavevmode\begingroup\setbox0=\hbox{#2}\parbox[#1]{\wd0}{\vspace{0pt}\box0}\endgroup
-}
-
-
 \title{\textsf{polycal}パッケージのデモ}\author{tattsan}\date{}
-
-
 
 \begin{document}
 \maketitle
@@ -69,15 +61,19 @@ ZR氏の「冬休み課題\ajMaru2：円周率を使わない話」を読んだ�
 \]
 で表される。このため囲まれた部分の面積はせいぜい2次の無理数で $\pi$ は現れない。
 
+\subsection*{}
+以下では \textsf{polynom} パッケージを\textgt{親パッケージ}と呼んで参照する。
+
 \section{面積の計算}
-まず変数の宣言。本当の変数$t$と文字定数$a,b$を変数扱いする。
+まず親パッケージの \verb|\polyset| を用いて変数を宣言する。
+ここでは本当の変数$t$だけでなく文字定数$a,b$を変数扱いしておく。
 \polyset{vars=tab}
 \begin{quote}
 \begin{boxedverbatim}
 \polyset{vars=tab}
 \end{boxedverbatim}
 \end{quote}
-次に3次ベジェによる円もどき曲線の定義。
+次に3次ベジェによる円もどき曲線の定義。多項式の定義には \verb|\polydefine| を用いる。
 \polydefine\x{(1-t)^3*1+3(1-t)^2t*1+3(1-t)t^2*a+t^3*0}
 \polydefine\y{(1-t)^3*0+3(1-t)^2t*a+3(1-t)t^2*1+t^3*1}
 \begin{quote}
@@ -86,12 +82,15 @@ ZR氏の「冬休み課題\ajMaru2：円周率を使わない話」を読んだ�
 \polydefine\y{(1-t)^3*0+3(1-t)^2t*a+3(1-t)t^2*1+t^3*1}
 \end{boxedverbatim}
 \end{quote}
-ここで $a$ は
+これで \verb|\x| や \verb|\y| に多項式がセットされる。
+以下でも \verb|\poly***| の形のコマンドの多くは  \verb|\poly***\cs{*}{*}| の形式で
+\verb|\cs| に計算結果をセットするようになっている。詳しくはマニュアル \verb|polycal.pdf| を
+参照のこと。なお式中の $a$ は
 \[
   a=\frac43\bigl(\sqrt2-1\bigr)
 \]
-であるが、この値の代入は最後に行なう。
-この \verb+\x,\y+ を表示させるには \verb+\polyprint+ を用いる。
+だが、値の代入は最後に行なう。
+\verb+\x,\y+ の定義内容を表示させるには親パッケージの \verb+\polyprint+ を用いる。
 \begin{quote}
 \begin{boxedverbatim}
 \begin{align*}
@@ -102,7 +101,7 @@ ZR氏の「冬休み課題\ajMaru2：円周率を使わない話」を読んだ�
 \begin{align*}
   x &= \polyprint\x, & y &= \polyprint\y.
 \end{align*}
-表示されるのは簡約後の数式である。次にこれを微分する。
+表示されるのは簡約後の数式である。次にこれを \verb|\polydiff| を用いて微分する。
 \polydiff\dx{t}\x  \polydiff\dy{t}\y
 \begin{quote}
 \begin{boxedverbatim}
@@ -115,8 +114,8 @@ ZR氏の「冬休み課題\ajMaru2：円周率を使わない話」を読んだ�
 \begin{align*}
   dx &= (\polyprint\dx)\,dt, & dy &= (\polyprint\dy)\,dt.
 \end{align*}    
-次に面積要素を定義する。円の面積を計算するため、
-$\frac12(xdy-ydx)$ の4倍を$dS$と定めよう。
+次に面積要素を定義する。円の面積を計算するため、$\frac12(xdy-ydx)$ の4倍を$dS$と定めよう。
+積や差の計算に用いる \verb|\polymul| や \verb|\polysub| は親パッケージのものである。
 \begin{quote}
 \begin{boxedverbatim}
 \polymul\dSA\x\dy  \polymul\dSB\y\dx
@@ -133,18 +132,28 @@ $\frac12(xdy-ydx)$ の4倍を$dS$と定めよう。
  dS &=2(xdy-ydx)\\
     &=(\polyprint\dS)\,dt.
 \end{align*}
-次は積分だ。
+次は積分だ。不定積分の計算には \verb|\polyint| を用いる。変数の値が0からの積分になる。
 \begin{quote}
 \begin{boxedverbatim}
 \polyint\St{t}\dS
-\polysubstnum\S{t}{1}\St
-\[ S = \int_0^1dS = \polyprint\S. \]
+\[ S(t) = \int_0^tdS = \polyprint\St. \]
 \end{boxedverbatim}
 \end{quote}
 \polyint\St{t}\dS
+\[ S(t) = \int_0^tdS = \polyprint\St. \]
+定積分を得るには代入コマンド \verb|\polysubstnum| または  \verb|\polysubst| を用いる。
+\begin{quote}
+\begin{boxedverbatim}
 \polysubstnum\S{t}{1}\St
-\[ S = \int_0^1dS = \polyprint\S. \]
-最後に$a$の値を代入しよう。まずは$b=\sqrt2$として、$a=\frac43(b-1)$を代入する。
+\[ S = \int_0^1dS = S(1) = \polyprint\S. \]
+\end{boxedverbatim}
+\end{quote}
+\polysubstnum\S{t}{1}\St
+\[ S = \int_0^1dS = S(1) = \polyprint\S. \]
+\verb|\polysubstnum| は有理数の代入、\verb|\polysubst| は有理数でも変数でも多項式でも代入できる。
+異なるアルゴリズムを用いているが、現状では \verb|\polysubstnum| が特に速いというわけではない。
+\medskip\\
+次に$a$に $\frac43\bigl(\sqrt2-1\bigr)$ を代入しよう。まずは$b=\sqrt2$として、$a=\frac43(b-1)$を代入する。
 \begin{quote}
 \begin{boxedverbatim}
 \polysubst\S{a}{(4/3)(b-1)}\S
@@ -153,7 +162,7 @@ $\frac12(xdy-ydx)$ の4倍を$dS$と定めよう。
 \end{quote}
 \polysubst\S{a}{(4/3)(b-1)}\S
 \[ S=\polyprint\S. \]
-最後に$b$に$\sqrt2$を代入する。これが答だ!
+最後に$b$に$\sqrt2$を代入する。正の有理数の正の平方根の代入には \verb|\polysubstsqrt| を用いる。答はこうだ！
 \begin{quote}
 \begin{boxedverbatim}
 \polysubstsqrt\S{b}{2}\S \Huge
@@ -165,7 +174,7 @@ $\frac12(xdy-ydx)$ の4倍を$dS$と定めよう。
 \normalsize
 \section{パラメータ$\boldsymbol a$のチューニング}
 ところで $a=\frac43\bigl(\sqrt2-1\bigr)$ という値は、曲線が
-$t=\frac12$ で円上の点 $\left(\frac1{\sqrt2\ },\frac1{\sqrt2\ }\right)$
+$t=\frac12$ で円上の点 $\bigl(\frac1{\sqrt2\,},\frac1{\sqrt2\,}\bigr)$
 を通過するように決めたものらしい。これだとベジェ曲線が完全に円の外側に
 位置することになるが、もう少し内側にひっこめた方が円からの最大偏差を減らせる。
 そこで例えば
@@ -192,6 +201,10 @@ $t=\frac12$ で円上の点 $\left(\frac1{\sqrt2\ },\frac1{\sqrt2\ }\right)$
 \end{align*}
 \end{boxedverbatim}
 \end{quote}
+\verb|\polyfactorize|は親パッケージのコマンドで、
+基本的には有理係数の1次因子しか括り出せない。
+ただし最後の因子が有理係数の2次式の場合のみ、実係数の範囲で
+因数分解してくれる。
 \polysub\J\I{1}
 \begin{align*}
  I-1 &= \polyprint\J \\ &= \polyfactorize\J
