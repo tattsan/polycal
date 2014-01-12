@@ -111,7 +111,7 @@
 % \frac{\partial g(x,a,b)}{\partial a} =\polyprint\Dag,\quad
 % \frac{\partial g(x,a,b)}{\partial b} =\polyprint\Dbg.
 % \]
-% But in this manual, $g(x)$ will be treated as one variable polynomial.
+% But in this manual, $g(x)$ will be treated as one variable function.
 % \begin{quote}
 %  |\polydiff\Dgx{x}\gx  \[ \frac{dg(x)}{dx}=\polyprint\Dgx. \]|
 % \end{quote}
@@ -128,7 +128,8 @@
 % \begin{macro}{\polyint}
 % \meta{macro}\marg{variable}\marg{polynomial}
 % \end{macro}
-% caclulates indefinite integral from \meta{variable}$=0$.
+% This macro caclulates indefinite integral of \meta{polynomial} from 
+% \meta{variable}$=0$.
 %   \begin{quote}
 %     |\polyint\Hx{x}\hx \[ H(x)=\int_0^x h(t)dt= \polyprint\Hx. \]|
 %   \end{quote}
@@ -147,8 +148,8 @@
 %     \[ S=\int_a^bh(x)dx=H(b)-H(a)=\polyprint\S. \]
 % Unfortunately, factorization of multivariate polynomial is not currently supported,
 % so this can not be arranged to $S=\displaystyle\frac{(b-a)^3}{6}$ automatically.
-% You can also Substitute a polynomial for a variable. 
-% For example, let $b=a^2-2$ in $S$.
+% \medskip\\
+% Let's try another substitution. If you substitute $b=a^2-2$ in $S$, then
 % \begin{quote}
 %   |\polysubst\SS{b}{a^2-2}\S| \\
 %   |\[ b=a^2-2\ \  \Rightarrow\ \  S=\polyprint\SS=\polyfactorize\SS. \]|
@@ -176,7 +177,6 @@
 %   |\[\polyset{delims={}{}}S=\polyprint\SSS. \]|
 % \end{quote}
 %   \[\polyset{delims={}{}}S=\polyprint\SSS. \]
-%
 % \CheckSum{625}
 % \StopEventually{}
 % \section{Implementation}
@@ -244,9 +244,9 @@
 %
 
 % \begin{macro}{\polypower}
-% \meta{macro}\marg{variable}\marg{natural number}\marg{polynomial}
+% \meta{macro}\marg{variable}\marg{polynomial}\marg{non negative integer}
 % \begin{describe}
-% Set \meta{natural number}th power of \meta{polynomial} to \meta{macro}.
+% Set \meta{non negative integer}th power of \meta{polynomial} to \meta{macro}.
 % \end{describe}
 %    \begin{macrocode}
 \newcommand*\polypower[1]{%
