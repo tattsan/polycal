@@ -1,20 +1,23 @@
 \documentclass[dvipdfmx]{jsarticle}
+\usepackage{polycal} % requires polynom.sty
 \usepackage[T1]{fontenc}
-\usepackage{polynom}
-\usepackage{polycal}
+% \usepackage{otf}
+\DeclareKanjiFamily{JY1}{cidj}{}
+\DeclareFontShape{JY1}{cidj}{m}{1}{<->s * [0.92469] cidjmr1-h}{}
+\def\maru2{{\usekanji{JY1}{cidj}{m}{1}\char"E6B4}}
 \usepackage{amsmath}
 \usepackage{moreverb}
 \usepackage{pict2e,color}
 \usepackage{hyperref}
-\usepackage{otf}
-
-\title{\textsf{polycal}パッケージのデモ}\author{tattsan}\date{}
+\usepackage{xintexpr}
+\def\currentTeXversion{3.1415926}
+\def\futureTeXversion {3.14159265358979323846264338327950288419716939937510\dots}
+\title{\textsf{polycal}パッケージのデモ}\author{tattsan}\date{2014/01/12 v.0.01b}
 
 \begin{document}
 \maketitle
-
 \section{動機}
-ZR氏の「冬休み課題\ajMaru2：円周率を使わない話」を読んだ。
+ZR氏の「冬休み課題\maru2：円周率を使わない話」を読んだ。
 \begin{quote}
   \url{http://d.hatena.ne.jp/zrbabbler/20131231/1388478052}
   (\url{http://t.co/NjEtKJwLyO})
@@ -151,10 +154,13 @@ ZR氏の「冬休み課題\ajMaru2：円周率を使わない話」を読んだ�
 \end{quote}
 \polysubstnum\S{t}{1}\St
 \[ S = \int_0^1dS = S(1) = \polyprint\S. \]
-\verb|\polysubstnum| は有理数の代入、\verb|\polysubst| は有理数でも変数でも多項式でも代入できる。
-異なるアルゴリズムを用いているが、現状では \verb|\polysubstnum| が特に速いというわけではない。
+\verb|\polysubstnum| は有理数限定での代入だが、
+\verb|\polysubst| は多項式を（従って有理数も変数も）代入できる。
+異なるアルゴリズムを用いてはいるが、現状では \verb|\polysubstnum| が
+特に速いというわけではない。
 \medskip\\
-次に$a$に $\frac43\bigl(\sqrt2-1\bigr)$ を代入しよう。まずは$b=\sqrt2$として、$a=\frac43(b-1)$を代入する。
+次に$a$に $\frac43\bigl(\sqrt2-1\bigr)$ を代入しよう。
+まずは$b=\sqrt2$として、$a=\frac43(b-1)$を代入する。
 \begin{quote}
 \begin{boxedverbatim}
 \polysubst\S{a}{(4/3)(b-1)}\S
@@ -173,6 +179,20 @@ ZR氏の「冬休み課題\ajMaru2：円周率を使わない話」を読んだ�
 \polysubstsqrt\S{b}{2}\S \Huge
 \[ \polyset{delims={\left.}{\right.}} S=\polyprint\S. \]
 \normalsize
+なおこの値を \textsf{xintexpr} パッケージを用いて数値計算してみると次の値になる。
+\begin{quote}
+\begin{boxedverbatim}
+\[ S=\xinttheexpr trunc((-22/5)+(16/3)*sqrt(2,15),10)\relax\dots \]
+\end{boxedverbatim}
+\end{quote}
+\begin{align*}
+  S
+  &=\xinttheexpr trunc((-22/5)+(16/3)*sqrt(2,15),10)\relax\dots \\
+  \text{Current TeX version}
+  &=\currentTeXversion \hphantom{\text{current TeX version}}
+\end{align*}
+誤差はおよそ$+0.028\%$である。
+
 \section{パラメータ$\boldsymbol a$のチューニング}
 ところで $a=\frac43\bigl(\sqrt2-1\bigr)$ という値は、曲線が
 $t=\frac12$ で円上の点 $\bigl(\frac1{\sqrt2\,},\frac1{\sqrt2\,}\bigr)$
@@ -187,18 +207,18 @@ $t=\frac12$ で円上の点 $\bigl(\frac1{\sqrt2\,},\frac1{\sqrt2\,}\bigr)$
 \begin{boxedverbatim}
 \polymul\xx\x\x \polymul\yy\y\y \polyadd\rr\xx\yy
 \polyint\It{t}\rr \polysubstnum\I{t}{1}\It
-\[ I = \int_0^1(x^2+y^2)dt= \polyprint\I \]
+\[ I = \int_0^1(x^2+y^2)dt= \polyprint\I. \]
 \end{boxedverbatim}
 \end{quote}
 \polymul\xx\x\x \polymul\yy\y\y \polyadd\rr\xx\yy
 \polyint\It{t}\rr \polysubstnum\I{t}{1}\It
-\[ I = \int_0^1(x^2+y^2)dt= \polyprint\I \]
+\[ I = \int_0^1(x^2+y^2)dt= \polyprint\I. \]
 
 \begin{quote}
 \begin{boxedverbatim}
 \polysub\J\I{1}
 \begin{align*}
- I-1 &= \polyprint\J \\ &= \polyfactorize\J
+ I-1 &= \polyprint\J \\ &= \polyfactorize\J.
 \end{align*}
 \end{boxedverbatim}
 \end{quote}
@@ -208,10 +228,10 @@ $t=\frac12$ で円上の点 $\bigl(\frac1{\sqrt2\,},\frac1{\sqrt2\,}\bigr)$
 因数分解してくれる。
 \polysub\J\I{1}
 \begin{align*}
- I-1 &= \polyprint\J \\ &= \polyfactorize\J
+ I-1 &= \polyprint\J \\ &= \polyfactorize\J.
 \end{align*}
 これより $a=\frac1{12}\bigl(\sqrt{385}-13\bigr)$ が得られる。
-再度面積を計算すると
+再度面積を計算すると次のようになる。
 \begin{quote}
 \begin{boxedverbatim}
 \polysubstnum\SS{t}{1}\St
@@ -225,7 +245,18 @@ $t=\frac12$ で円上の点 $\bigl(\frac1{\sqrt2\,},\frac1{\sqrt2\,}\bigr)$
 \polysubstsqrt\SS{b}{385}\SS \Huge
 \[ \polyset{delims={\left.}{\right.}} S_2=\polyprint\SS. \]
 \normalsize
-
+\begin{quote}
+\begin{boxedverbatim}
+\[ S_2=\xinttheexpr trunc((-349/120)+(37/120)*sqrt(385,15),10)\relax\dots \]
+\end{boxedverbatim}
+\end{quote}
+\begin{align*}
+  S_2
+  &=\xinttheexpr trunc((-349/120)+(37/120)*sqrt(385,15),10)\relax\ldots\\
+  \text{Future TeX version}
+  &=\futureTeXversion
+\end{align*}
+誤差はおよそ$+0.00035\%$である。
 \end{document}
 %%% Local Variables: 
 %%% mode: japanese-latex
