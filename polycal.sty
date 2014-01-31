@@ -6,7 +6,22 @@
 %%
 %% polycal.dtx  (with options: `package')
 %% 
-%% This work is copyright 2014 Tatsuya SATO.
+%% Copyright 2014 SATO Tatsuya
+%% 
+%% The files  polycal.dtx  and  polycal.ins  and all files generated
+%% from these two files are referred to as `this work'.
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%% http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status `maintained'.
+%% 
+%% The Current Maintainer of this work is SATO Tatsuya.
 %% 
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{polycal}[2014/01/11 v0.01b (TS)]
@@ -79,7 +94,7 @@
       \relax \expandafter\@gobbletwo
     \else
       \ifx #3\pld@V \if#4#2
-            \@tempcnta #5 \advance\@tempcnta 1
+            \@tempcnta #5 \advance\@tempcnta\@ne
             \expandafter\pld@Extend\expandafter#1{\expandafter\pld@R\expandafter{\the\@tempcnta}{1}}%
       \fi\fi
       \pld@Extend#1{\noexpand#3{#4}{#5}}%
@@ -225,7 +240,7 @@
 \def\pld@PowerPoly#1#2#3{%
   \ifnum#3=\z@ \def#1{\pld@R{1}{1}}%
   \else
-    \@tempcnta#3\advance\@tempcnta-1
+    \@tempcnta#3\advance\@tempcnta\m@ne
     \edef\@tempa{\the\@tempcnta}%
     \pld@PowerPoly#1#2\@tempa
     \let\@tempb#1
@@ -263,8 +278,8 @@
                             \else \aftergroup\@secondoftwo \fi
             \fi
         \else
-            % \pld@IfVarL#2\relax\@empty#6\relax\@empty
-            \pld@IfVarL#2#6%
+            % \pld@IfVarL#2\relax\@empty#6\relax\@empty % Bug code.
+            \pld@IfVarL#2#6% Fixed code.
                 {\aftergroup\@firstoftwo}%
                 {\aftergroup\@secondoftwo}%
         \fi

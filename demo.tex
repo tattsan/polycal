@@ -1,21 +1,44 @@
 \documentclass[dvipdfmx]{jsarticle}
-\usepackage{polycal} % requires polynom.sty
-\usepackage[T1]{fontenc}
-% \usepackage{otf}
-\DeclareKanjiFamily{JY1}{cidj}{}
-\DeclareFontShape{JY1}{cidj}{m}{1}{<->s * [0.92469] cidjmr1-h}{}
-\def\maru2{{\usekanji{JY1}{cidj}{m}{1}\char"E6B4}}
+% \documentclass{ltjsarticle}\usepackage[ipaex]{luatexja-preset}
+% \documentclass[xelatex,jadriver=standard]{bxjsarticle}
+% \documentclass[pdflatex,jadriver=standard]{bxjsarticle}% 因数分解に失敗する。
+
+\usepackage{polycal}% Requires polynom.sty.
+
+\makeatletter
+\ifdefined\kanjiskip
+   \unless\ifdefined\kchar
+      \DeclareKanjiFamily{JY1}{utfj}{}
+      \DeclareFontShape{JY1}{utfj}{m}{2}{<->s * [0.92469] utfjmr2-h}{}
+      \DeclareFontShape{JY1}{utfj}{bx}{2}{<->s * [0.92469] utfjgr2-h}{}
+      \def\maru2{{%
+         \edef\reserved@a{\gtdefault}\ifx\k@family\reserved@a \kanjiseries{bx}\fi
+         \kanjifamily{utfj}\kanjishape{2}\selectfont \char"C1D1
+       }}
+   \else
+      \def\maru2{②}
+   \fi
+\else
+   \def\maru2{②}
+\fi
+\makeatother
+
 \usepackage{amsmath}
 \usepackage{moreverb}
 \usepackage{pict2e,color}
-\usepackage{hyperref}
+\usepackage[unicode]{hyperref}
 \usepackage{xintexpr}
 \def\currentTeXversion{3.1415926}
 \def\futureTeXversion {3.14159265358979323846264338327950288419716939937510\dots}
-\title{\textsf{polycal}パッケージのデモ}\author{tattsan}\date{2014/01/12 v.0.01b}
+
+\title{\textsf{polycal}パッケージのデモ}
+\author{tattsan}
+\date{2014/01/12\enspace Version 0.01b}
 
 \begin{document}
+
 \maketitle
+
 \section{動機}
 ZR氏の「冬休み課題\maru2：円周率を使わない話」を読んだ。
 \begin{quote}
@@ -36,7 +59,7 @@ ZR氏の「冬休み課題\maru2：円周率を使わない話」を読んだ。
 \end{quote}
 その結果、大して理解していない \verb|\expandafter| をあちこちに書く羽目になった。
 以下\textsf{polycal} パッケージを利用してニセ円の面積を計算する。
-また\textsf{polynom} パッケージを\textgt{親パッケージ}と呼んで参照する。
+また\textsf{polynom} パッケージを\textbf{親パッケージ}と呼んで参照する。
 
 \section{問題の説明}
 \begin{quote}

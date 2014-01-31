@@ -1,6 +1,20 @@
 % \iffalse
+% Copyright 2014 SATO Tatsuya
 %
-%This work is copyright 2014 Tatsuya SATO.
+% The files  polycal.dtx  and  polycal.ins  and all files generated
+% from these two files are referred to as `this work'.
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+% http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status `maintained'.
+%
+% The Current Maintainer of this work is SATO Tatsuya.
 %
 %<*driver>
 \documentclass{ltxdoc}
@@ -100,7 +114,7 @@
 % |\[\polyprint\aa, \polyprint\bb, \polyprint\cc, \polyprint\dd.\]|
 % \[\polyprint\aa, \polyprint\bb, \polyprint\cc, \polyprint\dd.\]
 % \let\aa\relax \let\bb\relax \let\cc\relax \let\cc\relax
-% You can differentiate with another variable:
+% You may differentiate with another variable:
 % \begin{quote}
 % |\polydiff\Dag{a}\gx \polydiff\Dbg{b}\gx|\\
 % |\[ \frac{\partial g(x,a,b)}{\partial a} =\polyprint\Dag,\quad|\\
@@ -166,7 +180,7 @@
 % \meta{macro}\marg{variable}\marg{rational number}\marg{1-variable polynomial}
 % \end{macro}
 % This macro substitute $\sqrt{\meta{rational number}}$ for \meta{variable}.
-% Note that polynomial should be one variable. Let substitute $a=\sqrt5$
+% Note that polynomial should contain only one variable. Let substitute $a=\sqrt5$
 % in $S=\polyfactorize\SS$.
 % \begin{quote}
 % |\polysubstsqrt\SSS{a}{5}\SS \[ S=\polyprint\SSS. \]|
@@ -177,7 +191,7 @@
 %   |\[\polyset{delims={}{}}S=\polyprint\SSS. \]|
 % \end{quote}
 %   \[\polyset{delims={}{}}S=\polyprint\SSS. \]
-% \CheckSum{625}
+% \CheckSum{627}
 % \StopEventually{}
 % \section{Implementation}
 %
@@ -376,7 +390,7 @@
       \relax \expandafter\@gobbletwo
     \else
       \ifx #3\pld@V \if#4#2
-            \@tempcnta #5 \advance\@tempcnta 1
+            \@tempcnta #5 \advance\@tempcnta\@ne
             \expandafter\pld@Extend\expandafter#1{\expandafter\pld@R\expandafter{\the\@tempcnta}{1}}%
       \fi\fi
       \pld@Extend#1{\noexpand#3{#4}{#5}}%
@@ -659,7 +673,7 @@
 \def\pld@PowerPoly#1#2#3{%
   \ifnum#3=\z@ \def#1{\pld@R{1}{1}}%
   \else
-    \@tempcnta#3\advance\@tempcnta-1
+    \@tempcnta#3\advance\@tempcnta\m@ne
     \edef\@tempa{\the\@tempcnta}%
     \pld@PowerPoly#1#2\@tempa
     \let\@tempb#1
@@ -718,8 +732,8 @@
                             \else \aftergroup\@secondoftwo \fi
             \fi
         \else
-            % \pld@IfVarL#2\relax\@empty#6\relax\@empty
-            \pld@IfVarL#2#6%
+            % \pld@IfVarL#2\relax\@empty#6\relax\@empty % Bug code.
+            \pld@IfVarL#2#6% Fixed code.
                 {\aftergroup\@firstoftwo}%
                 {\aftergroup\@secondoftwo}%
         \fi
@@ -737,14 +751,14 @@
 % \section{History}
 % \renewcommand\labelitemi{--}
 % \begin{itemize}
-% \item[0.01] 2014/01/09 (private test version)
-%   \item Implemented |\pld@DiffPoly|,  |\pld@IntPoly|, |\pld@SubstNumPoly|, 
-%    |\pld@SubstPlyPoly|, |\pld@SubstSqrtPoly|.
-% \item[0.01a] 2014/01/11
-%   \item Fixed a bug in |\pld@IfMonomL@| of original \packagename{polynom} package.
 % \item[0.01b] 2014/01/12
 %   \item Wrote .dtx.
 %   \item Minor fix in |\pld@SubstSqrtPoly|.
+% \item[0.01a] 2014/01/11
+%   \item Fixed a bug in |\pld@IfMonomL@| of original \packagename{polynom} package.
+% \item[0.01] 2014/01/09 (private test version)
+%   \item Implemented |\pld@DiffPoly|,  |\pld@IntPoly|, |\pld@SubstNumPoly|, 
+%    |\pld@SubstPlyPoly|, |\pld@SubstSqrtPoly|.
 % \end{itemize}
 % \medskip
 %
