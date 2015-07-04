@@ -26,7 +26,13 @@
 \usepackage{amsmath}
 \usepackage{moreverb}
 \usepackage{pict2e,color}
-\usepackage[unicode]{hyperref}
+\usepackage{hyperref}
+\hypersetup{%
+ bookmarksnumbered=true,%
+ colorlinks=true,%
+ setpagesize=false,%
+}
+\usepackage{pxjahyper}
 \usepackage{xintexpr}
 \def\currentTeXversion{3.14159265}
 \def\futureTeXversion {3.14159265358979323846264338327950288419716939937510\dots}
@@ -36,9 +42,7 @@
 \date{2014/01/12\enspace Version 0.01b}
 
 \begin{document}
-
 \maketitle
-
 \section{動機}
 ZR氏の「冬休み課題\maru2：円周率を使わない話」を読んだ。
 \begin{quote}
@@ -216,7 +220,7 @@ ZR氏の「冬休み課題\maru2：円周率を使わない話」を読んだ。
 \end{align*}
 誤差はおよそ$+0.028\%$である。
 
-\section{パラメータ$\boldsymbol a$のチューニング}
+\section{パラメータ\texorpdfstring{$\boldsymbol a$}{a}のチューニング}
 ところで $a=\frac43\bigl(\sqrt2-1\bigr)$ という値は、曲線が
 $t=\frac12$ で円上の点 $\bigl(\frac1{\sqrt2\,},\frac1{\sqrt2\,}\bigr)$
 を通過するように決めたものらしい。これだとベジェ曲線が完全に円の外側に
